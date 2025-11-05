@@ -1,0 +1,33 @@
+body{
+    font-family: Arial, sans-serif;
+    background-color: rgb(41, 41, 160);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0%;
+    
+}
+.login-container {
+    background-color: rgb(255, 255, 255);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+h2{
+    color:black;
+    margin-bottom: 25px;
+}
+.input-group{
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+label{
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: black;
+}
