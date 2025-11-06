@@ -1,6 +1,6 @@
 body{
     font-family: Arial, sans-serif;
-    background-color: rgb(41, 41, 160);
+    background-color: #15274f;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,21 +8,31 @@ body{
     margin: 0%;
     
 }
+
 .login-container {
-    background-color: rgb(255, 255, 255);
-    padding: 40px;
+    background-color: #edece8;
+    padding: 60px;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 300px;
     text-align: center;
 }
+
 h2{
     color:black;
     margin-bottom: 25px;
 }
+
+h2 span {
+    color: #3498db; 
+    font-weight: bold;
+    margin-left: 8px; 
+}
+
 .input-group{
     margin-bottom: 15px;
     text-align: left;
+    position: relative;
 }
 
 label{
@@ -30,4 +40,210 @@ label{
     margin-bottom: 5px;
     font-weight: bold;
     color: black;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"]{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    padding-right: 45px;
+}
+
+button{
+    background-color: #ccc;
+    color: #000;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 15px;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+button:hover{
+    background-color: #ccc;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transform: translateY(-3px); 
+}
+
+.eye-container {
+    position: absolute;
+    bottom: 8px;
+    right: 10px;
+    width: 33px;  /* con estos dos  */
+    height: 22px; /* se modifica el tamaño y por ende q parezca ojo */
+    cursor: pointer;
+    z-index: 2;
+    
+    border-radius: 55%;
+    overflow: hidden;
+    
+    background-color: #edece8;
+    border: 1px solid #9c9c9c; 
+}
+
+
+.eye {
+    position: absolute;
+    
+    width: 20px;
+    height: 20px;
+    top: 0; 
+    left: 4px;
+    
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    z-index: 1; 
+    transition: transform 0.1s ease-out;
+}
+
+.pupil {
+    width: 8px;
+    height: 8px;
+    background-color: #3498db; 
+    border-radius: 50%;
+    border: 1px solid #2980b9;
+    z-index: 2;
+}
+
+.eyelid {
+    position: absolute;
+    width: 100%;
+    height: 50%;
+    background-color: #9c9c9c; 
+    border-color: #aaa;
+    border-style: solid;
+    z-index: 3;
+    transition: transform 0.3s ease-in-out;
+}
+
+.eyelid.top {
+    top: 0;
+    border-width: 0 0 1px 0; 
+    border-color: #ccc;
+    border-style: solid;
+    transform: translateY(-100%); 
+}
+
+.eyelid.bottom {
+    bottom: 0;
+    border-color: #ccc;
+    border-style: solid;
+    border-width: 1px 0 0 0; 
+    transform: translateY(100%);
+}
+
+.eye-container.active .eyelid.top {
+    transform: translateY(0);
+}
+
+.eye-container.active .eyelid.bottom {
+    transform: translateY(0); 
+}
+
+.forgotpsw {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #555;
+}
+
+.forgotpsw a{
+    color: #3498db; 
+    text-decoration: none;
+    font-weight: bold;
+}
+.forgotpsw a:visited {
+    color: #3498db; 
+    text-decoration: none;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.forgotpsw a:hover {
+    text-decoration: none;
+}
+
+.register-link {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #555;
+}
+
+.register-link p {
+    margin: 0;
+}
+
+.register-link a {
+    color: #3498db; 
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.register-link a:hover {
+    text-decoration: none;
+}
+
+
+.divider {
+    margin: 25px 0 20px 0; 
+    border: 0;
+    border-top: 1px solid #ccc;
+}
+
+.social-login {
+    text-align: center;
+}
+
+.social-login p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center; 
+    gap: 15px; /* cuanto espacio hay entre las bolitas */
+}
+
+.social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;  /* ancho de la bolita */
+    height: 40px; /* alto de la bolita */
+    border-radius: 50%; /* para que sea circular */
+    border: 1px solid #ccc;
+    background-color: #fff; 
+    color: #333; 
+    text-decoration: none;
+    font-size: 18px; /* tamaño del ícono */
+    transition: all 0.3s ease;
+}
+
+/* le damos efecto hover pa q se vea bonito */
+.social-icon:hover {
+    transform: translateY(-3px); /* pa q se eleve */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.social-icon.google:hover {
+    color: #DB4437; 
+    border-color: #DB4437;
+}
+
+.social-icon.facebook:hover {
+    color: #4267B2; 
+    border-color: #4267B2;
 }
