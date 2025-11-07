@@ -64,8 +64,16 @@ loginForm.addEventListener('submit', (e) => {
 
     signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-            console.log('¡Bienvenido!', userCredential.user);
-            window.location.href = 'https://media.tenor.com/5JtSeb0T71MAAAAM/dancing-banana.gif'; 
+            const user = userCredential.user;
+            if (user.emailVerified) {
+                console.log('¡Bienvenido!', user);
+                window.location.href = 'https://media.tenor.com/5JtSeb0T71MAAAAM/dancing-banana.gif'; 
+            } else {
+                console.log('Intento de login con correo no verificado');
+                alert('Tu cuenta ya está registrada, pero aún no has verificado tu correo.\n\nPor favor, revisa tu bandeja de entrada (y spam).');
+                
+                sendEmailVerification(user); 
+            }
         })
         .catch((error) => {
             console.error('Error en el inicio de sesión:', error);
