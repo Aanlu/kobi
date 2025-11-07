@@ -1,4 +1,4 @@
-import { auth } from './firebase-config.js';
+import { auth, db } from './firebase-config.js'; 
 import { 
     signInWithEmailAndPassword, 
     GoogleAuthProvider, 
@@ -8,6 +8,13 @@ import {
     fetchSignInMethodsForEmail,
     linkWithCredential,
 } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+
+import { 
+    doc, 
+    setDoc, 
+    getDoc, 
+    serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
 function getNombreAmigable(providerId) {
     if (providerId === 'google.com') {
@@ -106,52 +113,83 @@ facebookBtn.addEventListener('click', () => {
     iniciarSesionConPopup(facebookProvider);
 });
 
-function iniciarSesionConPopup(provider) {
-    signInWithPopup(auth, provider)
-        .then((result) => {
-            const infoAdicional = getAdditionalUserInfo(result);
-            if (infoAdicional.isNewUser) {
-                console.log('¡Bienvenido nuevo usuario!', result.user);
+async function iniciarSesionConPopup(provider) {
+    try {
+        const result = await signInWithPopup(auth, provider);
+        const infoAdicional = getAdditionalUserInfo(result);
+        const user = result.user;
+
+        if (infoAdicional.isNewUser) {
+            console.log('Detectado nuevo usuario social:', user.uid);
+
+            let idUsuarioBase = user.displayName.replace(/\s+/g, '').toLowerCase();
+            let idUsuario = idUsuarioBase;
+            let i = 1;
+            
+            let usernameRef = doc(db, "usernames", idUsuario);
+            let docSnap = await getDoc(usernameRef);
+            
+            while (docSnap.exists()) {
+                idUsuario = `${idUsuarioBase}${i}`;
+                i++;
+                usernameRef = doc(db, "usernames", idUsuario);
+                docSnap = await getDoc(usernameRef);
             }
-            window.location.href = 'https://media.tenor.com/5JtSeb0T71MAAAAM/dancing-banana.gif';
-        })
-        .catch((error) => {
-            if (error.code === 'auth/account-exists-with-different-credential') {
-                
-                const pendingCredential = error.credential;
-                const email = error.customData.email;
-                
-                fetchSignInMethodsForEmail(auth, email)
-                    .then((methods) => {
-                        const firstProvider = methods[0];
-                        const nombreProveedorExistente = getNombreAmigable(firstProvider);
-                        const nombreProveedorNuevo = getNombreAmigable(provider.providerId);
 
-                        if (firstProvider === 'password') {
-                            const password = prompt(`Ya tienes una cuenta con ${email} (registrada con contraseña).\n\nIngresa tu contraseña para vincular tu cuenta de ${nombreProveedorNuevo}:`);
-                            
-                            if (password) {
-                                signInWithEmailAndPassword(auth, email, password)
-                                    .then((userCredential) => {
-                                        return linkWithCredential(userCredential.user, pendingCredential);
-                                    })
-                                    .then(() => {
-                                        alert('¡Cuentas vinculadas con éxito! Iniciando sesión...');
-                                        window.location.href = 'https://media.tenor.com/5JtSeb0T71MAAAAM/dancing-banana.gif';
-                                    })
-                                    .catch((linkError) => {
-                                        alert('Error al vincular: Contraseña incorrecta o ' + linkError.message);
-                                    });
-                            }
-                        } else {
-                            alert(`Ya tienes una cuenta con ${email} registrada usando ${nombreProveedorExistente}.\n\nPor favor, inicia sesión con ${nombreProveedorExistente}.`);
-                        }
-                    });
+            const userDocRef = doc(db, "usuarios", user.uid);
+            const userData = {
+                idUsuario: idUsuario, 
+                nombreMostrado: user.displayName,
+                correo: user.email,
+                avatarUrl: user.photoURL || "https://i.imgur.com/83USY6U.png", 
+                puntuacionTotal: 0,
+                rachaActual: 0,
+                ultimaActividad: serverTimestamp()
+            };
 
-            } else if (error.code === 'auth/popup-closed-by-user') {
-                alert('El popup de autenticación fue cerrado antes de completar el inicio de sesión.');
+            const userDocPromise = setDoc(userDocRef, userData);
+
+            const usernameDocPromise = setDoc(usernameRef, { uid: user.uid });
+
+            await Promise.all([userDocPromise, usernameDocPromise]);
+            
+            console.log('Perfil de usuario social creado en Firestore.');
+        }
+
+        console.log('Inicio de sesión social exitoso.');
+        window.location.href = 'https://media.tenor.com/5JtSeb0T71MAAAAM/dancing-banana.gif';
+
+    } catch (error) {
+        console.error("Error en login social:", error);
+
+        if (error.code === 'auth/account-exists-with-different-credential') {
+            const pendingCredential = error.credential;
+            const email = error.customData.email;
+            
+            const methods = await fetchSignInMethodsForEmail(auth, email);
+            const firstProvider = methods[0];
+            const nombreProveedorExistente = getNombreAmigable(firstProvider);
+            const nombreProveedorNuevo = getNombreAmigable(provider.providerId);
+
+            if (firstProvider === 'password') {
+                const password = prompt(`Ya tienes una cuenta con ${email} (registrada con contraseña).\n\nIngresa tu contraseña para vincular tu cuenta de ${nombreProveedorNuevo}:`);
+                if (password) {
+                    try {
+                        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                        await linkWithCredential(userCredential.user, pendingCredential);
+                        alert('¡Cuentas vinculadas con éxito! Iniciando sesión...');
+                        window.location.href = 'https://media.tenor.com/5JtSeb0T71MAAAAM/dancing-banana.gif';
+                    } catch (linkError) {
+                        alert('Error al vincular: Contraseña incorrecta o ' + linkError.message);
+                    }
+                }
             } else {
-                alert('Error al iniciar sesión con el proveedor seleccionado.');
+                alert(`Ya tienes una cuenta con ${email} registrada usando ${nombreProveedorExistente}.\n\nPor favor, inicia sesión con ${nombreProveedorExistente}.`);
             }
-        });
+        } else if (error.code === 'auth/popup-closed-by-user') {
+            alert('El popup de autenticación fue cerrado.');
+        } else {
+            alert('Error al iniciar sesión con el proveedor: ' + error.message);
+        }
+    }
 }
