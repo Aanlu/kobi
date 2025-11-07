@@ -1,6 +1,10 @@
+// firebase-config.js
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
 
+// ⬇️ ESTE DEBE SER EL OBJETO 'firebaseConfig' CORRECTO ⬇️
+// (El que copiaste de tu script.js que sí funciona)
 const firebaseConfig = {
     apiKey: "AIzaSyAycV6E9jTbPwV4qZsER3XFy1iRRdiAc94",
     authDomain: "kobi-ee1a1.firebaseapp.com",
@@ -12,6 +16,4 @@ const firebaseConfig = {
 };
     
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-export { auth };
+export const auth = getAuth(app); // Exporta el 'auth' correcto
