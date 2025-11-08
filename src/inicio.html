@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kobi - Principal</title>
+    <link rel="stylesheet" href="/src/styles/inicio.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+<body>
+    <div class="main-container">
+        <header class="main-header">
+    <div class="logo">
+        kobi<span>&lt;/&gt;</span>
+    </div>
+    <nav class="main-nav">
+        <button class="menu-toggle" id="menu-toggle">
+            <div class="bar bar1"></div>
+            <div class="bar bar2"></div>
+            <div class="bar bar3"></div>
+        </button>
+        <div class="dropdown-menu" id="dropdown-menu">
+            <p class="user-greeting" id="user-greeting">Hola, <span id="display-username">Usuario</span></p>
+            <button class="logout-btn" id="logout-btn">Cerrar Sesión</button>
+        </div>
+    </nav>
+</header>
+
+        <main class="content">
+            <h1>¡Bienvenido a Kobi!</h1>
+        </main>
+    </div>
+
+    <script src="/src/scripts/inicio.js" type="module"></script>
+</body>
+</html>
