@@ -51,6 +51,9 @@ input[type="password"]{
     border-radius: 5px;
     box-sizing: border-box;
     padding-right: 45px;
+    &:focus{
+        color: #3498db;
+    }
 }
 
 button{
